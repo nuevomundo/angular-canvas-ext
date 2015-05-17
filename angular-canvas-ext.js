@@ -418,7 +418,8 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
       mode: '=?',
       image: '=?',
       frame: '=?',
-      zoom: '=?'
+      zoom: '=?',
+      aspect: '=?'
     },
     link: function ($scope, element, attrs) {
       var canvas = element[0], ctx = canvas.getContext('2d'), previousMousePosition = null, isMoving = false, defaultScale = 0, isUpdateOffset = false, isUpdateScale = false, lastZoomDist = null;
@@ -434,22 +435,29 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
       $scope.$watch(function () {
         return $scope.src;
       }, function (newSrc) {
-        console.log('new src ' + newSrc);
         if (newSrc) {
           loadImage();
         } else {
           $scope.image = null;
         }
       });
+      $scope.getElementDimensions = function () {
+        return element.offsetParent().width();
+      };
+      $scope.$watch($scope.getElementDimensions, function (newValue, oldValue) {
+        canvas.width = newValue;
+        if ($scope.aspect) {
+          canvas.height = $scope.aspect * canvas.width;
+        }
+        if ($scope.image) {
+          updateDefaultScale();
+          updateScale();
+          drawImage();
+        }
+      });
       function loadImage() {
         var image = new Image();
         image.onload = function () {
-          var widthScale = canvas.width / image.width, heightScale = canvas.height / image.height;
-          var minZoom = Math.max(widthScale, heightScale);
-          $scope.zoom = {
-            min: minZoom,
-            max: 3
-          };
           $scope.image = image;
           $scope.$apply();
         };
@@ -458,7 +466,6 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
       $scope.$watch(function () {
         return $scope.image;
       }, function (newImage, oldImage) {
-        console.log('new image ' + newImage);
         canvas.width = canvas.width;
         if (newImage) {
           updateDefaultScale();
@@ -494,6 +501,12 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
         $scope.frame = apImageHelper.drawImage($scope.image, $scope.scale, $scope.offset, ctx);
       }
       function clipToBounds() {
+        var widthScale = canvas.width / $scope.image.width, heightScale = canvas.height / $scope.image.height;
+        var minZoom = Math.max(widthScale, heightScale);
+        $scope.zoom = {
+          min: minZoom,
+          max: 3
+        };
         isUpdateOffset = true;
         var bounds = {
             width: canvas.width,
