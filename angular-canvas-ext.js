@@ -410,7 +410,10 @@ canvasExtModule.factory('apImageHelper', function ($rootScope, $q, apBrowserHelp
 canvasExtModule.directive('apCanvas', function (apImageHelper) {
   return {
     restrict: 'A',
-    scope: { binding: '=' },
+    scope: {
+      binding: '=',
+      src: '=?'
+    },
     link: function ($scope, element, attrs) {
       var canvas = element[0], ctx = canvas.getContext('2d'), previousMousePosition = null, isMoving = false, defaultScale = 0, isUpdateOffset = false, isUpdateScale = false, lastZoomDist = null;
       if (!$scope.binding.offset) {
@@ -419,10 +422,13 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
           y: 0
         };
       }
+      if (!$scope.src) {
+        $scope.src = $scope.binding.src;
+      }
       if (!$scope.binding.mode) {
         $scope.binding.mode = 'fill';
       }
-      $scope.$watch('binding.src', function (newSrc) {
+      $scope.$watch('src', function (newSrc) {
         if (newSrc) {
           loadImage();
         } else {
@@ -444,13 +450,12 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
         }
       });
       function loadImage() {
-        console.log('load image!!');
         var image = new Image();
         image.onload = function () {
           $scope.binding.image = image;
           $scope.$apply();
         };
-        image.src = $scope.binding.src;
+        image.src = $scope.src;
       }
       // $scope.$watch(function () {
       //   return $scope.binding.image;
