@@ -436,7 +436,8 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
         }
       });
       $scope.getElementDimensions = function () {
-        return element.offsetParent().width();
+        // return element.offsetParent().width();
+        return element.parent()[0].offsetWidth;
       };
       $scope.$watch($scope.getElementDimensions, function (newValue, oldValue) {
         canvas.width = newValue;
