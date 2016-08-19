@@ -2,9 +2,9 @@
  * Angular Canvas Extensions - AngularJS module
  *
  * Allows to open images in canvas, zoom, pan, crop, resize and download image.
- * 
+ *
  * https://github.com/petalvlad/angular-canvas-ext
- * 
+ *
  * Copyright (c) 2014 Alex Petropavlovsky <petalvlad@gmail.com>
  * Released under the MIT license
  */
@@ -138,9 +138,9 @@ canvasExtModule.factory('apImageHelper', function ($rootScope, $q, apBrowserHelp
     return img1.width === img2.width && img1.height === img2.height;
   }
   function imagesDifference(img1, img2, tolerance, strict) {
-    // if (!apTypeHelper.isOneOf(img1, ['HTMLImageElement', 'ImageData']) || 
+    // if (!apTypeHelper.isOneOf(img1, ['HTMLImageElement', 'ImageData']) ||
     //     !apTypeHelper.isOneOf(img2, ['HTMLImageElement', 'ImageData'])) {
-    //   return undefined;  
+    //   return undefined;
     // }
     var img1Data = img1 instanceof ImageData ? img1.data : imageToImageData(img1).data, img2Data = img2 instanceof ImageData ? img2.data : imageToImageData(img2).data;
     tolerance = apTypeHelper.isNumber(tolerance) || 255 * 0.05;
@@ -305,7 +305,7 @@ canvasExtModule.factory('apImageHelper', function ($rootScope, $q, apBrowserHelp
       return null;
     }
     // if (!apTypeHelper.isOneOf(image, ['HTMLImageElement', 'ImageData', 'HTMLCanvasElement']) ||
-    //     !frame || 
+    //     !frame ||
     //     !frame.isValid()) {
     //   return null;
     // }
@@ -632,7 +632,6 @@ canvasExtModule.directive('apCanvas', function (apImageHelper) {
     },
     link: function ($scope, element, attrs) {
       var updateImageSrc = function (src) {
-        console.log('new src ' + src);
         $scope.src = src;
         $scope.$apply();
         if ($scope.onImageReady) {
